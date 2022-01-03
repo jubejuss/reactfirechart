@@ -1,70 +1,170 @@
-# Getting Started with Create React App
+# How to
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+We are creating React ap and then npm installing Chartjs plugin and configuring it.
 
-## Available Scripts
+**_ What we do: _**
 
-In the project directory, you can run:
+- Adding React
+- Adding Chartjs
+- Adding Firebase
+- Adding Tailwind
+- Sorting data
+- Form validation
 
-### `npm start`
+## Install ready app
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Git clone and npm install
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Step by step
 
-### `npm test`
+### Initial setup
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- `npx create-react-app my-app`  
+   (if needed, then `npx create-react-app@5.0.0 my-app`)  
+   but there where problem with 5.0.0
+  **_ IT WORKS at the moment ONLY WITH: _** `npm install --save react-chartjs-2@2.10.0 chart.js@2.9.4`
+- cd to the directory and `npm run start`to see your react installation
+- delete all files in src folder, exept App.css, App.js, reportWebVitals and index.js
+- Leave in index.js only this:
 
-### `npm run build`
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Remove entire component in App.js, leave only:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```javascript
+import './App.css';
+```
 
-### `npm run eject`
+Now add:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```javascript
+import './App.css';
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+const App = () => {
+  return <div>Hello world</div>;
+};
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+export default App;
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+And we are set up React environment and ready for action
 
-## Learn More
+### Let's create chart component
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- create component folder `src/components`and `Chart.js`into it and into that file:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```javascript
+import React from 'react';
 
-### Code Splitting
+const Chart = () => {
+  return <div>Chart</div>;
+};
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+export default Chart;
+```
 
-### Analyzing the Bundle Size
+- Next, let's go to the `App.js` and import our component:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```javascript
+import Chart from './components/Chart';
+import './App.css';
 
-### Making a Progressive Web App
+const App = () => {
+  return (
+    <div>
+      <Chart />
+    </div>
+  );
+};
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+export default App;
+```
 
-### Advanced Configuration
+- In Chart.js file import it `import {} from 'react-chartjs-2';`
+- Fetch data from firebase:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```javascript
+const Chart = () => {
 
-### Deployment
+  let labelsArray = [];
+  let vaxArray = [];
+  let unVaxArray = [];
+  let unKnownArray = [];
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+  db.collection('inputs')
+    .get()
+    .then((snapshot) => {
+      snapshot.docs.forEach((doc) => {
+        let item = doc.data();
 
-### `npm run build` fails to minify
+        let date = item.date;
+        labelsArray.push(date);
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+        let vax = item.vax;
+        vaxArray.push(vax);
+
+        let unVax = item.unVax;
+        unVaxArray.push(unVax);
+
+        let unKnown = item.unKnown;
+        unKnownArray.push(unKnown);
+      });
+    });
+```
+
+- Configure chart
+  We can choose te chart type in curly braces if fo push ctrl+space  
+   Let's also choose chart size and filling chart with sample data.  
+  [Chartjs](https://www.chartjs.org/docs/latest/getting-started/usage.html)
+
+- Use defaults
+  add `default`to import like so `import { Line } from 'react-chartjs-2';`
+  and make changes in: `defaults.global.legend.position = 'bottom';`
+
+Thanks to https://www.youtube.com/watch?v=c_9c5zkfQ3Y and https://www.youtube.com/watch?v=Ge6PQkpa6pA
+
+- To sort by date, add to Chart.js line 16: `.orderBy('date')`
+
+### Add Tailwind
+
+https://tailwindcss.com/docs/guides/create-react-app
+
+- Install Tailwind form plugin for better styling
+  https://github.com/tailwindlabs/tailwindcss-forms
+
+### Add form validation
+
+in input.js, after `e.preventDefault();` add if operation:
+
+```javascript
+e.preventDefault();
+    const fieldDate = document.querySelector('.date');
+    const fieldVax = document.querySelector('.vax');
+    const fieldUnVax = document.querySelector('.unvax');
+    const fieldUnKnown = document.querySelector('.unknown ');
+    const validDate = fieldDate.value;
+    const validVax = fieldVax.value;
+    const validUnVax = fieldUnVax.value;
+    const validUnKnown = fieldUnKnown.value;
+    if (!validDate || !validVax || !validUnVax || !validUnKnown) {
+      alert('Mõni väljadest on tühi');
+    } else {
+```
+
+https://unclebigbay.com/react-form-validation-without-state-and-third-party-packages
+
+## Dealing with Realtime Firebase
+
+https://www.youtube.com/watch?v=kpNgSwoReWc
